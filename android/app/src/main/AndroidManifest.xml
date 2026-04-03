@@ -19,6 +19,9 @@
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize"
         android:exported="true">
+        <meta-data
+            android:name="com.naver.maps.map.NCP_KEY_ID"
+            android:value="k577f0ry39" />
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
