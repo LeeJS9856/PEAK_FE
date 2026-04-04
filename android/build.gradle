@@ -10,9 +10,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url 'https://repository.map.naver.com/archive/maven'
-        }
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
@@ -22,3 +19,11 @@ buildscript {
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+allprojects {
+    repositories {
+        maven {
+            url "https://repository.map.naver.com/archive/maven"
+        }
+    }
+}
