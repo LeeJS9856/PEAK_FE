@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { NaverMapView } from '@mj-studio/react-native-naver-map';
 
 const ExploreScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>탐색</Text>
-      <Text style={styles.subtitle}>가장 가까운 주유소를 찾아보세요</Text>
+      <NaverMapView/>
+      
     </View>
   );
 };
