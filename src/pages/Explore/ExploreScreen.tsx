@@ -7,7 +7,7 @@ const ExploreScreen = () => {
 
   // GitHub Pages URL로 변경
   const source = {
-    uri: 'https://LeeJS9856.github.io/PEAK_FE/index.html',
+    uri: 'https://leeJS9856.github.io/PEAK_FE/index.html',
   };
 
   const onMessage = (event: any) => {
