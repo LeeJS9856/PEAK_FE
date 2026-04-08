@@ -1,12 +1,30 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { NaverMapView } from '@mj-studio/react-native-naver-map';
+import React, { useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { WebView } from 'react-native-webview';
 
 const ExploreScreen = () => {
+  const webViewRef = useRef(null);
+
+  // GitHub Pages URL로 변경
+  const source = {
+    uri: 'https://LeeJS9856.github.io/PEAK_FE/index.html',
+  };
+
+  const onMessage = (event: any) => {
+    const data = JSON.parse(event.nativeEvent.data);
+    console.log("선택한 좌표:", data);
+  };
+
   return (
     <View style={styles.container}>
-      <NaverMapView/>
-      
+      <WebView
+        ref={webViewRef}
+        source={source}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        onMessage={onMessage}
+        style={{ flex: 1 }}
+      />
     </View>
   );
 };
@@ -14,19 +32,6 @@ const ExploreScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#ffffff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
   },
 });
 
