@@ -1,19 +1,36 @@
 import React, { useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { WebView } from 'react-native-webview';
+import { StyleSheet, View, Platform, ActivityIndicator } from 'react-native';
+import { WebView, WebViewMessageEvent } from 'react-native-webview';
+import { useLocation } from '../../hooks/useLocation';
 
 const ExploreScreen = () => {
   const webViewRef = useRef(null);
+  const { initialLocation, loading } = useLocation();
 
-  // GitHub Pages URL로 변경
-  const source = {
-    uri: 'https://leeJS9856.github.io/PEAK_FE/index.html',
-  };
+  const source = Platform.select({
+    ios: require('./naver_map.html'),
+    android: require('./naver_map.html'),
+     //android: { uri: 'file:///android_asset/naver_map.html' },
+  });
 
-  const onMessage = (event: any) => {
+  // 위치 정보 주입
+  const injectedJavaScript = initialLocation
+    ? `window.initialLocation = {latitude: ${initialLocation.latitude}, longitude: ${initialLocation.longitude}};`
+    : '';
+
+  // 지도에서 선택한 좌표 수신
+  const onMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-    console.log("선택한 좌표:", data);
+    console.log('📨 WebView에서 받은 메시지:', data);
   };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -22,6 +39,10 @@ const ExploreScreen = () => {
         source={source}
         javaScriptEnabled={true}
         domStorageEnabled={true}
+        allowFileAccessFromFileURLs={true}
+        allowUniversalAccessFromFileURLs={true}
+        allowFileAccess={true}
+        injectedJavaScript={injectedJavaScript}
         onMessage={onMessage}
         style={{ flex: 1 }}
       />
