@@ -1,29 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k577f0ry39"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naver Map</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=k577f0ry39"></script>
     <style>
-        body, html { width: 100%; height: 100%; margin: 0; padding: 0; }
-        #map { width: 100%; height: 100vh; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
-<div id="map"></div>
-<script>
-    var mapOptions = {
-        center: new naver.maps.LatLng(37.3595704, 127.105399),
-        zoom: 15
-    };
-    var map = new naver.maps.Map('map', mapOptions);
+    <div id="map"></div>
+    <script>
+        console.log('HTML 로드됨');
+        console.log('window.initialLocation:', window.initialLocation);
 
-    naver.maps.Event.addListener(map, 'click', function(e) {
-        window.ReactNativeWebView.postMessage(JSON.stringify({
-            lat: e.coord.lat(),
-            lng: e.coord.lng()
-        }));
-    });
-</script>
+        function initializeMap() {
+            console.log('Map 초기화 시작');
+
+            const initialLat = window.initialLocation?.latitude || 37.5665;
+            const initialLng = window.initialLocation?.longitude || 126.9780;
+
+            console.log('초기 위치:', { initialLat, initialLng });
+
+            try {
+                const mapOptions = {
+                    center: new naver.maps.LatLng(initialLat, initialLng),
+                    zoom: 15
+                };
+
+                const map = new naver.maps.Map('map', mapOptions);
+                console.log('✅ 지도 생성 완료');
+
+                naver.maps.Event.addListener(map, 'click', function(e) {
+                    const lat = e.coord.lat();
+                    const lng = e.coord.lng();
+                    console.log('지도 클릭:', { lat, lng });
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        latitude: lat,
+                        longitude: lng
+                    }));
+                });
+            } catch (error) {
+                console.error('❌ 지도 생성 오류:', error);
+            }
+        }
+
+        if (window.naver && window.naver.maps) {
+            console.log('naver.maps 이미 로드됨');
+            initializeMap();
+        } else {
+            console.log('naver.maps 로드 대기 중...');
+            window.addEventListener('load', function() {
+                console.log('window load 이벤트');
+                if (window.naver && window.naver.maps) {
+                    initializeMap();
+                } else {
+                    console.error('naver.maps를 찾을 수 없음');
+                }
+            });
+
+            let attempts = 0;
+            const checkInterval = setInterval(function() {
+                attempts++;
+                if (window.naver && window.naver.maps) {
+                    clearInterval(checkInterval);
+                    initializeMap();
+                } else if (attempts > 50) {
+                    clearInterval(checkInterval);
+                    console.error('naver.maps 로드 실패');
+                }
+            }, 100);
+        }
+    </script>
 </body>
 </html>

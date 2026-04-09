@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naver Map</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=k577f0ry39"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+        html {
+            width: 100%;
+            height: 100%;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        console.log('HTML 로드됨');
+
+        let map = null; // 전역 변수로 선언
+        let mapInitialized = false;
+
+        // Naver Maps가 로드될 때까지 대기
+        function initializeMap() {
+            console.log('Map 초기화 시작');
+
+            // React Native에서 주입된 초기 위치 사용
+            const initialLat = window.initialLocation?.latitude || 37.5665;
+            const initialLng = window.initialLocation?.longitude || 126.9780;
+
+            console.log('초기 위치:', { initialLat, initialLng });
+
+            // 1️⃣ initialLocation 확인 후 RN에 전송
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'DEBUG',
+                message: 'initialLocation check',
+                latitude: initialLat,
+                longitude: initialLng
+            }));
+
+            try {
+                const mapOptions = {
+                    center: new naver.maps.LatLng(initialLat, initialLng),
+                    zoom: 15
+                };
+
+                map = new naver.maps.Map('map', mapOptions); // 전역 변수에 할당
+                mapInitialized = true;
+                console.log('✅ 지도 생성 완료');
+
+                // 2️⃣ 지도 센터 확인 후 RN에 전송
+                const center = map.getCenter();
+                window.ReactNativeWebView.postMessage(JSON.stringify({
+                    type: 'DEBUG',
+                    message: 'map center after creation',
+                    latitude: center.lat(),
+                    longitude: center.lng()
+                }));
+
+                // 지도 클릭 시 좌표 전송
+                naver.maps.Event.addListener(map, 'click', function(e) {
+                    const lat = e.coord.lat();
+                    const lng = e.coord.lng();
+                    console.log('지도 클릭:', { lat, lng });
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'MAP_CLICK',
+                        latitude: lat,
+                        longitude: lng
+                    }));
+                });
+            } catch (error) {
+                console.error('❌ 지도 생성 오류:', error);
+                window.ReactNativeWebView.postMessage(JSON.stringify({
+                    type: 'ERROR',
+                    message: error.toString()
+                }));
+            }
+        }
+
+        // 👇 window.initialLocation 변경을 감지하는 Proxy
+        const originalInitialLocation = window.initialLocation;
+        
+        Object.defineProperty(window, 'initialLocation', {
+            get() {
+                return this._initialLocation;
+            },
+            set(newValue) {
+                console.log('🔄 initialLocation 변경됨:', newValue);
+                this._initialLocation = newValue;
+
+                // 지도가 이미 생성되었으면 센터 변경
+                if (mapInitialized && map && newValue) {
+                    console.log('📍 지도 센터 이동:', newValue);
+                    map.setCenter(
+                        new naver.maps.LatLng(newValue.latitude, newValue.longitude)
+                    );
+
+                    // React Native에 알림
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'MAP_CENTER_UPDATED',
+                        latitude: newValue.latitude,
+                        longitude: newValue.longitude
+                    }));
+                }
+            }
+        });
+
+        // Naver Maps API 로드 확인
+        if (window.naver && window.naver.maps) {
+            console.log('naver.maps 이미 로드됨');
+            initializeMap();
+        } else {
+            console.log('naver.maps 로드 대기 중...');
+            // Naver Maps 스크립트 로드 완료 대기
+            window.addEventListener('load', function() {
+                console.log('window load 이벤트');
+                if (window.naver && window.naver.maps) {
+                    initializeMap();
+                } else {
+                    console.error('naver.maps를 찾을 수 없음');
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'ERROR',
+                        message: 'naver.maps not found'
+                    }));
+                }
+            });
+
+            // 혹은 주기적으로 확인 (최대 5초)
+            let attempts = 0;
+            const checkInterval = setInterval(function() {
+                attempts++;
+                console.log('naver.maps 확인 시도:', attempts);
+                
+                if (window.naver && window.naver.maps) {
+                    clearInterval(checkInterval);
+                    initializeMap();
+                } else if (attempts > 50) {
+                    clearInterval(checkInterval);
+                    console.error('naver.maps 로드 실패');
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'ERROR',
+                        message: 'naver.maps failed to load'
+                    }));
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
