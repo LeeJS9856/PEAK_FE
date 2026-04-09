@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naver Map</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k577f0ry39"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100%;
+            height: 100vh;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        let map;
+        const mapElement = document.getElementById('map');
+
+        // 지도 초기화
+        function initMap(lat = 37.4979, lng = 127.0276, zoom = 15) {
+            const location = new naver.maps.LatLng(lat, lng);
+            map = new naver.maps.Map(mapElement, {
+                center: location,
+                zoom: zoom
+            });
+        }
+
+        // React Native에서 보낸 메시지 수신
+        window.receiveLocation = function(lat, lng, zoom) {
+            if (!map) {
+                initMap(lat, lng, zoom);
+            } else {
+                map.setCenter(new naver.maps.LatLng(lat, lng));
+                if (zoom) map.setZoom(zoom);
+            }
+        };
+
+        // 페이지 로드 시 기본 위치로 초기화
+        window.addEventListener('load', () => {
+            initMap();
+        });
+    </script>
+</body>
+</html>

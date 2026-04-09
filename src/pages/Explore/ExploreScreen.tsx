@@ -37,7 +37,6 @@ const ExploreScreen = () => {
       <WebView
         ref={webViewRef}
         source={source}
-        originWhitelist={['*']}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         allowFileAccessFromFileURLs={true}
