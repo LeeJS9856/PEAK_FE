@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import { COLORS } from '../../constants/colors';
 
 const ExploreScreen = () => {
-  const webViewRef = useRef(null);
+  const webViewRef = useRef<WebView>(null);
   const { initialLocation, loading } = useLocation();
 
   const source = Platform.select({
@@ -16,7 +16,7 @@ const ExploreScreen = () => {
     android: require('./naver_map.html'),
   });
 
-  // 위치 정보 주입
+  // 위치 정보 초기 주입
   const injectedJavaScript = initialLocation
     ? `window.initialLocation = {latitude: ${initialLocation.latitude}, longitude: ${initialLocation.longitude}};`
     : '';
@@ -27,10 +27,25 @@ const ExploreScreen = () => {
     console.log('📨 WebView에서 받은 메시지:', data);
   };
 
-  // 플로팅 버튼 클릭 핸들러
+  // 플로팅 버튼 클릭 - 지도 갱신 및 중앙 이동
   const handleFloatingButtonPress = () => {
-    console.log('🎯 플로팅 버튼 클릭됨!');
-    // 여기에 원하는 기능 추가
+    if (initialLocation && webViewRef.current) {
+      console.log('🎯 현재 위치로 이동:', initialLocation);
+      
+      const script = `
+        window.initialLocation = {latitude: ${initialLocation.latitude}, longitude: ${initialLocation.longitude}};
+        (function() {
+          if (window.map) {
+            const location = new naver.maps.LatLng(${initialLocation.latitude}, ${initialLocation.longitude});
+            window.map.setCenter(location);
+            window.map.setZoom(16);
+          }
+        })();
+        true;
+      `;
+      
+      webViewRef.current.injectJavaScript(script);
+    }
   };
 
   if (loading) {
@@ -56,7 +71,6 @@ const ExploreScreen = () => {
         style={styles.webview}
       />
       
-      {/* 플로팅 버튼 - 왼쪽 아래 배치 */}
       <FloatingActionButton
         position="bottom-right"
         onPress={handleFloatingButtonPress}
