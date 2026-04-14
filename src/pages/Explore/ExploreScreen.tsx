@@ -6,6 +6,8 @@ import { useLocation } from '../../hooks/useLocation';
 import FloatingActionButton from '../../components/FloatingActionButton';
 import Icon from 'react-native-vector-icons/Feather';
 import { COLORS } from '../../constants/colors';
+import SearchBar from '../../components/SearchBar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ExploreScreen = () => {
   const webViewRef = useRef<WebView>(null);
@@ -57,7 +59,10 @@ const ExploreScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView 
+      style={styles.container}
+      edges={['top', 'left', 'right']}>
+       
       <WebView
         ref={webViewRef}
         source={source}
@@ -70,6 +75,10 @@ const ExploreScreen = () => {
         onMessage={onMessage}
         style={styles.webview}
       />
+      <SearchBar
+        placeholder="경로 검색"
+        // onSearch={handleSearch}
+      />
       
       <FloatingActionButton
         position="bottom-right"
@@ -79,7 +88,7 @@ const ExploreScreen = () => {
       >
         <Icon name="crosshair" size={28} color={COLORS.black} />
       </FloatingActionButton>
-    </View>
+    </SafeAreaView>
   );
 };
 

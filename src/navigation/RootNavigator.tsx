@@ -5,12 +5,14 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../constants/colors';
 
 import ExploreScreen from '../pages/Explore/ExploreScreen';
 import MyVehicleScreen from '../pages/MyVehicle/MyVehicleScreen';
 import MyInfoScreen from '../pages/Info/InfoScreen';
+import SearchScreen from '../pages/Search/SearchScreen';
 
 const MyTabs = createBottomTabNavigator({
   screens: {
@@ -19,6 +21,7 @@ const MyTabs = createBottomTabNavigator({
       options: {
         title: '탐색',
         tabBarLabel: '탐색',
+        headerShown: false,
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="map" size={size} color={color} />
         ),
@@ -71,7 +74,24 @@ const MyTabs = createBottomTabNavigator({
   },
 });
 
-const Navigation = createStaticNavigation(MyTabs);
+const Stack = createNativeStackNavigator({
+  screens: {
+    HomeTabs: {
+      screen: MyTabs,
+      options: {
+        headerShown: false,
+      },
+    },
+    Search: {
+      screen: SearchScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+  },
+});
+
+const Navigation = createStaticNavigation(Stack);
 
 export default function App() {
   return <Navigation />;
