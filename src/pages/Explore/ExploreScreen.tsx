@@ -4,6 +4,7 @@ import { StyleSheet, View, Platform, ActivityIndicator } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { useLocation } from '../../hooks/useLocation';
 import FloatingActionButton from '../../components/FloatingActionButton';
+import Icon from 'react-native-vector-icons/Feather';
 
 const ExploreScreen = () => {
   const webViewRef = useRef(null);
@@ -57,7 +58,7 @@ const ExploreScreen = () => {
         backgroundColor="#ffffff"
         size="medium"
       >
-        {/* 아이콘을 여기에 추가 (예: SVG, 이미지, 텍스트 등) */}
+        <Icon name="crosshair" size={28} color="#333333" />
       </FloatingActionButton>
     </View>
   );
