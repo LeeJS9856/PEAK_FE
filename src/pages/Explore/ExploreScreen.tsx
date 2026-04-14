@@ -45,9 +45,13 @@ const ExploreScreen = () => {
       <WebView
         ref={webViewRef}
         source={source}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        allowFileAccessFromFileURLs={true}
+        allowUniversalAccessFromFileURLs={true}
+        allowFileAccess={true}
         injectedJavaScript={injectedJavaScript}
         onMessage={onMessage}
-        javaScriptEnabled={true}
         style={styles.webview}
       />
       
