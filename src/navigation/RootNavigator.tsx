@@ -5,6 +5,8 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { COLORS } from '../constants/colors';
 
 import ExploreScreen from '../pages/Explore/ExploreScreen';
 import MyVehicleScreen from '../pages/MyVehicle/MyVehicleScreen';
@@ -17,6 +19,9 @@ const MyTabs = createBottomTabNavigator({
       options: {
         title: '탐색',
         tabBarLabel: '탐색',
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="map" size={size} color={color} />
+        ),
       },
     },
     MyVehicle: {
@@ -24,6 +29,9 @@ const MyTabs = createBottomTabNavigator({
       options: {
         title: '내 차량',
         tabBarLabel: '내 차량',
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="car" size={size} color={color} />
+        ),
       },
     },
     MyInfo: {
@@ -31,6 +39,9 @@ const MyTabs = createBottomTabNavigator({
       options: {
         title: '내 정보',
         tabBarLabel: '내 정보',
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="menu" size={size} color={color} />
+        ),
       },
     },
   },
@@ -38,21 +49,21 @@ const MyTabs = createBottomTabNavigator({
     headerShown: true,
     headerTitleAlign: 'center',
     headerStyle: {
-      backgroundColor: '#ffffff',
+      backgroundColor: COLORS.white,
       borderBottomWidth: 1,
-      borderBottomColor: '#f0f0f0',
+      borderBottomColor: COLORS.lightgrey,
     },
     headerTitleStyle: {
       fontWeight: '600',
       fontSize: 18,
     },
     tabBarStyle: {
-      backgroundColor: '#ffffff',
+      backgroundColor: COLORS.white,
       borderTopWidth: 1,
-      borderTopColor: '#f0f0f0',
+      borderTopColor: COLORS.lightgrey,
     },
-    tabBarActiveTintColor: '#007AFF',
-    tabBarInactiveTintColor: '#999999',
+    tabBarActiveTintColor: COLORS.primary,
+    tabBarInactiveTintColor: COLORS.black,
     tabBarLabelStyle: {
       fontSize: 12,
       fontWeight: '600',

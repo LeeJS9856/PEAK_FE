@@ -1,19 +1,22 @@
+// src/pages/Explore/ExploreScreen.tsx
 import React, { useRef } from 'react';
 import { StyleSheet, View, Platform, ActivityIndicator } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { useLocation } from '../../hooks/useLocation';
+import FloatingActionButton from '../../components/FloatingActionButton';
+import Icon from 'react-native-vector-icons/Feather';
+import { COLORS } from '../../constants/colors';
 
 const ExploreScreen = () => {
-  const webViewRef = useRef(null);
+  const webViewRef = useRef<WebView>(null);
   const { initialLocation, loading } = useLocation();
 
   const source = Platform.select({
     ios: require('./naver_map.html'),
     android: require('./naver_map.html'),
-     //android: { uri: 'file:///android_asset/naver_map.html' },
   });
 
-  // 위치 정보 주입
+  // 위치 정보 초기 주입
   const injectedJavaScript = initialLocation
     ? `window.initialLocation = {latitude: ${initialLocation.latitude}, longitude: ${initialLocation.longitude}};`
     : '';
@@ -24,10 +27,31 @@ const ExploreScreen = () => {
     console.log('📨 WebView에서 받은 메시지:', data);
   };
 
+  // 플로팅 버튼 클릭 - 지도 갱신 및 중앙 이동
+  const handleFloatingButtonPress = () => {
+    if (initialLocation && webViewRef.current) {
+      console.log('🎯 현재 위치로 이동:', initialLocation);
+      
+      const script = `
+        window.initialLocation = {latitude: ${initialLocation.latitude}, longitude: ${initialLocation.longitude}};
+        (function() {
+          if (window.map) {
+            const location = new naver.maps.LatLng(${initialLocation.latitude}, ${initialLocation.longitude});
+            window.map.setCenter(location);
+            window.map.setZoom(16);
+          }
+        })();
+        true;
+      `;
+      
+      webViewRef.current.injectJavaScript(script);
+    }
+  };
+
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
@@ -44,8 +68,17 @@ const ExploreScreen = () => {
         allowFileAccess={true}
         injectedJavaScript={injectedJavaScript}
         onMessage={onMessage}
-        style={{ flex: 1 }}
+        style={styles.webview}
       />
+      
+      <FloatingActionButton
+        position="bottom-right"
+        onPress={handleFloatingButtonPress}
+        backgroundColor={COLORS.white}
+        size="medium"
+      >
+        <Icon name="crosshair" size={28} color={COLORS.black} />
+      </FloatingActionButton>
     </View>
   );
 };
@@ -53,6 +86,15 @@ const ExploreScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
+  },
+  webview: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
