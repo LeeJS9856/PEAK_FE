@@ -5,6 +5,7 @@ import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { useLocation } from '../../hooks/useLocation';
 import FloatingActionButton from '../../components/FloatingActionButton';
 import Icon from 'react-native-vector-icons/Feather';
+import { COLORS } from '../../constants/colors';
 
 const ExploreScreen = () => {
   const webViewRef = useRef(null);
@@ -35,7 +36,7 @@ const ExploreScreen = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FF6B6B" />
+        <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
@@ -59,10 +60,10 @@ const ExploreScreen = () => {
       <FloatingActionButton
         position="bottom-right"
         onPress={handleFloatingButtonPress}
-        backgroundColor="#ffffff"
+        backgroundColor={COLORS.white}
         size="medium"
       >
-        <Icon name="crosshair" size={28} color="#333333" />
+        <Icon name="crosshair" size={28} color={COLORS.black} />
       </FloatingActionButton>
     </View>
   );

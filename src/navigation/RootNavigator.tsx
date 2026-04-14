@@ -5,6 +5,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { COLORS } from '../constants/colors';
 
 import ExploreScreen from '../pages/Explore/ExploreScreen';
 import MyVehicleScreen from '../pages/MyVehicle/MyVehicleScreen';
@@ -38,21 +39,21 @@ const MyTabs = createBottomTabNavigator({
     headerShown: true,
     headerTitleAlign: 'center',
     headerStyle: {
-      backgroundColor: '#ffffff',
+      backgroundColor: COLORS.white,
       borderBottomWidth: 1,
-      borderBottomColor: '#f0f0f0',
+      borderBottomColor: COLORS.lightgrey,
     },
     headerTitleStyle: {
       fontWeight: '600',
       fontSize: 18,
     },
     tabBarStyle: {
-      backgroundColor: '#ffffff',
+      backgroundColor: COLORS.white,
       borderTopWidth: 1,
-      borderTopColor: '#f0f0f0',
+      borderTopColor: COLORS.lightgrey,
     },
-    tabBarActiveTintColor: '#007AFF',
-    tabBarInactiveTintColor: '#999999',
+    tabBarActiveTintColor: COLORS.primary,
+    tabBarInactiveTintColor: COLORS.black,
     tabBarLabelStyle: {
       fontSize: 12,
       fontWeight: '600',

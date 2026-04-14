@@ -7,6 +7,7 @@ import {
   GestureResponderEvent,
   Platform,
 } from 'react-native';
+import { COLORS } from '../constants/colors';
 
 interface FloatingActionButtonProps {
   onPress: (event: GestureResponderEvent) => void;
@@ -20,7 +21,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   onPress,
   children,
   position = 'bottom-right',
-  backgroundColor = '#FF6B6B',
+  backgroundColor = COLORS.primary,
   size = 'medium',
 }) => {
   const getPositionStyle = (): ViewStyle => {
