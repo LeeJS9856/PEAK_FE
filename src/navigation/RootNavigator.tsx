@@ -5,6 +5,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../constants/colors';
 
 import ExploreScreen from '../pages/Explore/ExploreScreen';
@@ -18,6 +19,9 @@ const MyTabs = createBottomTabNavigator({
       options: {
         title: '탐색',
         tabBarLabel: '탐색',
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="map" size={size} color={color} />
+        ),
       },
     },
     MyVehicle: {
@@ -25,6 +29,9 @@ const MyTabs = createBottomTabNavigator({
       options: {
         title: '내 차량',
         tabBarLabel: '내 차량',
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="car" size={size} color={color} />
+        ),
       },
     },
     MyInfo: {
@@ -32,6 +39,9 @@ const MyTabs = createBottomTabNavigator({
       options: {
         title: '내 정보',
         tabBarLabel: '내 정보',
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="menu" size={size} color={color} />
+        ),
       },
     },
   },
