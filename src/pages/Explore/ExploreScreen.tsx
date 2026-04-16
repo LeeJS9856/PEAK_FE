@@ -7,7 +7,6 @@ import FloatingActionButton from '../../components/FloatingActionButton';
 import Icon from 'react-native-vector-icons/Feather';
 import { COLORS } from '../../constants/colors';
 import SearchBar from '../../components/SearchBar';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ExploreScreen = () => {
   const webViewRef = useRef<WebView>(null);
@@ -59,9 +58,8 @@ const ExploreScreen = () => {
   }
 
   return (
-    <SafeAreaView 
-      style={styles.container}
-      edges={['top', 'left', 'right']}>
+    <View
+      style={styles.container}>
        
       <WebView
         ref={webViewRef}
@@ -88,7 +86,7 @@ const ExploreScreen = () => {
       >
         <Icon name="crosshair" size={28} color={COLORS.black} />
       </FloatingActionButton>
-    </SafeAreaView>
+    </View>
   );
 };
 

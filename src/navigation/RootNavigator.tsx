@@ -54,7 +54,7 @@ const MyTabs = createBottomTabNavigator({
     headerStyle: {
       backgroundColor: COLORS.white,
       borderBottomWidth: 1,
-      borderBottomColor: COLORS.lightgrey,
+      borderBottomColor: COLORS.lightgray,
     },
     headerTitleStyle: {
       fontWeight: '600',
@@ -63,7 +63,7 @@ const MyTabs = createBottomTabNavigator({
     tabBarStyle: {
       backgroundColor: COLORS.white,
       borderTopWidth: 1,
-      borderTopColor: COLORS.lightgrey,
+      borderTopColor: COLORS.lightgray,
     },
     tabBarActiveTintColor: COLORS.primary,
     tabBarInactiveTintColor: COLORS.black,

@@ -50,7 +50,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: 40,
+    top: 20,
     left: 0,
     right: 0,
     paddingHorizontal: 20,
