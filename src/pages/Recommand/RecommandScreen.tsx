@@ -13,8 +13,8 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 type RootStackParamList = {
   Recommand: {
-    selectedPlace?: string;   // 선택된 장소명
-    type?: 'start' | 'end';    // 현재는 'start' 로만 사용, 필요 시 'end' 도 지원
+    selectedPlace?: string;
+    type?: 'start' | 'end';
   };
 };
 
@@ -22,8 +22,8 @@ const RecommandScreen: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<RootStackParamList, 'Recommand'>>();
 
-  const [startLocation, setStartLocation] = useState<string>(''); // 출발지
-  const [endLocation, setEndLocation] = useState<string>('');     // 도착지
+  const [startLocation, setStartLocation] = useState<string>('');
+  const [endLocation, setEndLocation] = useState<string>('');
 
   useEffect(() => {
     const { selectedPlace, type } = route.params ?? {};
@@ -33,8 +33,23 @@ const RecommandScreen: React.FC = () => {
     }
   }, [route.params]);
 
-  const goToSearch = () => navigation.navigate('Search');
+    const goToSearchForStart = () => {
+    navigation.navigate('Search', {
+      target: 'start',
+      onSelect: (placeName: string) => {
+        setStartLocation(placeName);
+      },
+    });
+  };
 
+  const goToSearchForEnd = () => {
+    navigation.navigate('Search', {
+      target: 'end',
+      onSelect: (placeName: string) => {
+        setEndLocation(placeName);
+      },
+    });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.inputBox}>
@@ -45,7 +60,7 @@ const RecommandScreen: React.FC = () => {
             placeholder="출발 장소 입력"
             placeholderTextColor={COLORS.placeholder}
             value={startLocation}
-            onFocus={goToSearch}
+            onFocus={goToSearchForStart}
             onChangeText={setStartLocation}
           />
         </View>
@@ -57,7 +72,7 @@ const RecommandScreen: React.FC = () => {
             placeholder="도착 장소 입력"
             placeholderTextColor={COLORS.placeholder}
             value={endLocation}
-            onFocus={goToSearch}
+            onFocus={goToSearchForEnd}
             onChangeText={setEndLocation}
           />
         </View>

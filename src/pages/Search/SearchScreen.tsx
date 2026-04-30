@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity, TextInput, FlatList, Text, SafeAreaView, ActivityIndicator } from 'react-native';
 import { COLORS } from '../../constants/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { getFilteredData, SearchResult } from '../../utils/SearchUtils';
 
 const SearchScreen: React.FC = () => {
@@ -10,8 +10,29 @@ const SearchScreen: React.FC = () => {
   const [query, setQuery] = useState<string>('');
   const [filteredDataSource, setFilteredDataSource] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const route = useRoute<any>();
 
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const target = route.params?.target ?? 'start';
+
+  const handleSelectPlace = (placeName: string) => {
+    // 1. Recommand에서 보낸 콜백 함수(onSelect)가 있는지 확인
+    const onSelect = route.params?.onSelect;
+
+    if (onSelect) {
+      // 2. 콜백 함수에 선택한 장소명을 담아 실행 (Recommand의 state가 업데이트됨)
+      onSelect(placeName);
+      // 3. 현재 검색 화면을 닫고 이전 화면(Recommand)으로 돌아감
+      navigation.goBack();
+    } else {
+      // 만약 Main에서 바로 왔는데 Recommand로 가야 하는 상황이라면 (첫 진입)
+      navigation.navigate('Recommand', { 
+        selectedPlace: placeName, 
+        type: 'start' 
+      });
+    }
+  };
 
   const performSearch = async (text: string) => {
     if (!text.trim()) {
@@ -62,12 +83,7 @@ const SearchScreen: React.FC = () => {
   const renderItem = ({ item }: { item: SearchResult }) => (
     <TouchableOpacity 
       style={styles.itemContainer} 
-      onPress={() => {
-        navigation.navigate('Recommand', {
-          selectedPlace: item.name,
-          type: 'start'
-        });
-      }}
+       onPress={() => handleSelectPlace(item.name)}
     >
       <View style={styles.iconCircle}>
         <Icon name="location-sharp" size={18} color={COLORS.darkgray} />
