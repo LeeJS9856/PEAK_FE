@@ -13,6 +13,7 @@ import ExploreScreen from '../pages/Explore/ExploreScreen';
 import MyVehicleScreen from '../pages/MyVehicle/MyVehicleScreen';
 import MyInfoScreen from '../pages/Info/InfoScreen';
 import SearchScreen from '../pages/Search/SearchScreen';
+import RecommandScreen from '../pages/Recommand/RecommandScreen';
 
 const MyTabs = createBottomTabNavigator({
   screens: {
@@ -84,6 +85,12 @@ const Stack = createNativeStackNavigator({
     },
     Search: {
       screen: SearchScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+    Recommand: {
+      screen: RecommandScreen,
       options: {
         headerShown: false,
       },
