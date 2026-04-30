@@ -1,4 +1,6 @@
-// src/utils/searchUtils.ts
+// src/utils/SearchUtils.ts
+import { fetchNaverLocal } from '../apis/naverSearch';
+
 export interface SearchResult {
   id: string;
   name: string;
@@ -6,20 +8,16 @@ export interface SearchResult {
   category: string;
 }
 
-export const MOCK_DATA: SearchResult[] = [
-  { id: '1', name: '전남대학교', address: '광주광역시 북구 용봉로 77', category: '대학교' },
-  { id: '2', name: '전남대학교병원', address: '광주광역시 동구 제봉로 42', category: '대학병원' },
-  { id: '3', name: '전남대학교 광주캠퍼스', address: '광주광역시 북구 용봉동', category: '대학교' },
-  { id: '4', name: '전남대학교 정문', address: '광주광역시 북구 신안동', category: '교문,출입구' },
-];
-
-// 검색어에 따라 데이터를 필터링하는 함수
-export const getFilteredData = (query: string): SearchResult[] => {
+export const getFilteredData = async (query: string): Promise<SearchResult[]> => {
   if (!query.trim()) return [];
-  
-  return MOCK_DATA.filter((item) => {
-    const itemData = item.name.toLowerCase();
-    const textData = query.toLowerCase();
-    return itemData.includes(textData);
-  });
+
+  const apiRes = await fetchNaverLocal(query);
+  if (!apiRes?.items) return [];
+
+  return apiRes.items.map((place: any) => ({
+    id: place.link?.split('/').pop() || `${place.mapx}${place.mapy}`,
+    name: place.title.replace(/<[^>]*>/g, ''),
+    address: place.roadAddress || place.address || '',
+    category: place.category || '기타',
+  }));
 };
