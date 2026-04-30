@@ -10,6 +10,8 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../constants/colors';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import FloatingActionButton from '../../components/FloatingActionButton';
+import GasIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 type RootStackParamList = {
   Recommand: {
@@ -50,6 +52,11 @@ const RecommandScreen: React.FC = () => {
       },
     });
   };
+
+  const handleFloatingButtonPress = () => {
+
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.inputBox}>
@@ -84,7 +91,14 @@ const RecommandScreen: React.FC = () => {
           <Icon name="close" size={20} color={COLORS.darkgray} />
         </TouchableOpacity>
       </View>
-
+        <FloatingActionButton
+            position="bottom-right"
+            onPress={handleFloatingButtonPress}
+            backgroundColor={COLORS.primary}
+            size="medium"
+        >
+            <GasIcon name="gas-station-outline" size={35} color={COLORS.white} />
+        </FloatingActionButton>
     </SafeAreaView>
   );
 };
