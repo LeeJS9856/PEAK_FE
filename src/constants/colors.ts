@@ -11,9 +11,9 @@ export const COLORS = {
   // Neutral Colors
   white: '#FFFFFF',
   black: '#333333',
-  grey: '#CACACA',
-  darkgrey: '#9B9B9B',
-  lightgrey: '#F5F5F5',
+  gray: '#CACACA',
+  darkgray: '#9B9B9B',
+  lightgray: '#F5F5F5',
   placeholder: '#BABABA',
 
   // Backgrounds

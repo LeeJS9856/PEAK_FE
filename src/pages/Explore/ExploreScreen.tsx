@@ -6,6 +6,7 @@ import { useLocation } from '../../hooks/useLocation';
 import FloatingActionButton from '../../components/FloatingActionButton';
 import Icon from 'react-native-vector-icons/Feather';
 import { COLORS } from '../../constants/colors';
+import SearchBar from '../../components/SearchBar';
 
 const ExploreScreen = () => {
   const webViewRef = useRef<WebView>(null);
@@ -57,7 +58,9 @@ const ExploreScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}>
+       
       <WebView
         ref={webViewRef}
         source={source}
@@ -69,6 +72,10 @@ const ExploreScreen = () => {
         injectedJavaScript={injectedJavaScript}
         onMessage={onMessage}
         style={styles.webview}
+      />
+      <SearchBar
+        placeholder="경로 검색"
+        // onSearch={handleSearch}
       />
       
       <FloatingActionButton
