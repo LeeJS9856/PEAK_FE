@@ -14,6 +14,7 @@ import MyVehicleScreen from '../pages/MyVehicle/MyVehicleScreen';
 import MyInfoScreen from '../pages/Info/InfoScreen';
 import SearchScreen from '../pages/Search/SearchScreen';
 import RecommandScreen from '../pages/Recommand/RecommandScreen';
+import RefuelInfoModal from '../pages/Recommand/RefuelInfoModal';
 
 const MyTabs = createBottomTabNavigator({
   screens: {
@@ -93,6 +94,14 @@ const Stack = createNativeStackNavigator({
       screen: RecommandScreen,
       options: {
         headerShown: false,
+      },
+    },
+    RefuelInfo: {
+      screen: RefuelInfoModal,
+      options: {
+        headerShown: false,
+        presentation: 'transparentModal',
+        animation: 'fade'
       },
     },
   },

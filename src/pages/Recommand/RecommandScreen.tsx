@@ -54,7 +54,7 @@ const RecommandScreen: React.FC = () => {
   };
 
   const handleFloatingButtonPress = () => {
-
+    navigation.navigate('RefuelInfo');
   };
 
   return (
