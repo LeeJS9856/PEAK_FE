@@ -6,15 +6,37 @@ import { useRefuel } from '../../contexts/RefuelContext';
 import LocationInputSection from '../../components/LocationInputSection';
 import RouteOptionTabs, { RouteOption } from '../../components/RouteOptionTabs';
 import GasStationItem from '../../components/GasStationItem'; // 컴포넌트 로드
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import FloatingActionButton from '../../components/FloatingActionButton';
+import GasIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+type RootStackParamList = {
+  Recommand: {
+    selectedPlace?: string;
+    type?: 'start' | 'end';
+  };
+};
 
 const RecommandScreen: React.FC = () => {
+  const navigation = useNavigation<any>();
   const [startLocation, setStartLocation] = useState<string>('');
   const [endLocation, setEndLocation] = useState<string>('');
   const [selectedOption, setSelectedOption] = useState<RouteOption>('recommend');
-  
+  const route = useRoute<RouteProp<RootStackParamList, 'Recommand'>>();
   const { refuelData } = useRefuel();
 
-  // (useEffect 및 navigation 생략 - 기존 코드 동일하게 유지)
+  
+  const handleFloatingButtonPress = () => {
+    navigation.navigate('RefuelInfo');
+  };
+
+  useEffect(() => {
+    const { selectedPlace, type } = route.params ?? {};
+    if (selectedPlace) {
+      if (type === 'start') setStartLocation(selectedPlace);
+      else if (type === 'end') setEndLocation(selectedPlace);
+    }
+  }, [route.params]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,6 +69,14 @@ const RecommandScreen: React.FC = () => {
         )}
       </ScrollView>
 
+      <FloatingActionButton
+        position="bottom-right"
+        onPress={() => navigation.navigate('RefuelInfo')}
+        backgroundColor={COLORS.primary}
+        size="medium"
+      >
+        <GasIcon name="gas-station-outline" size={35} color={COLORS.white} />
+      </FloatingActionButton>
       {/* FAB 생략 */}
     </SafeAreaView>
   );
