@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
+  Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
@@ -12,6 +13,7 @@ import { COLORS } from '../../constants/colors';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import FloatingActionButton from '../../components/FloatingActionButton';
 import GasIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useRefuel } from '../../contexts/RefuelContext';
 
 type RootStackParamList = {
   Recommand: {
@@ -26,6 +28,7 @@ const RecommandScreen: React.FC = () => {
 
   const [startLocation, setStartLocation] = useState<string>('');
   const [endLocation, setEndLocation] = useState<string>('');
+  const { refuelData } = useRefuel();
 
   useEffect(() => {
     const { selectedPlace, type } = route.params ?? {};
@@ -90,7 +93,15 @@ const RecommandScreen: React.FC = () => {
         >
           <Icon name="close" size={20} color={COLORS.darkgray} />
         </TouchableOpacity>
+        
       </View>
+      {refuelData && (
+          <View style={styles.refuelInfoTextContent}>
+            <Text style={styles.descText}>• 차량: {refuelData.car.name}</Text>
+            <Text style={styles.descText}>• 연료량: {refuelData.fuelAmount} L</Text>
+            <Text style={styles.descText}>• 목표금액: {refuelData.targetPrice}</Text>
+          </View>
+        )}
         <FloatingActionButton
             position="bottom-right"
             onPress={handleFloatingButtonPress}
@@ -139,6 +150,18 @@ const styles = StyleSheet.create({
     right: 12,
     top: 12,
   },
+
+  refuelInfoTextContent: {
+    marginTop: 15,
+    paddingTop: 10,
+    borderTopWidth: 0.5,
+    borderTopColor: COLORS.gray,
+  },
+  descText: {
+    fontSize: 14,
+    color: COLORS.black,
+    lineHeight: 22,
+  }
 });
 
 export default RecommandScreen;

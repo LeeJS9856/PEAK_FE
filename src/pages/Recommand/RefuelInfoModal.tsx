@@ -15,17 +15,19 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../constants/colors';
 import { CAR_LIST } from '../../constants/cars';
+import { useRefuel } from '../../contexts/RefuelContext';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const RefuelInfoModal = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>(); 
   
   // 상태 관리
   const [selectedCar, setSelectedCar] = useState(CAR_LIST[0]);
   const [showSelector, setShowSelector] = useState(false); // 셀렉터 노출 여부
   const [fuelAmount, setFuelAmount] = useState('');
   const [targetPrice, setTargetPrice] = useState('');
+  const { setRefuelData } = useRefuel();
 
   // 애니메이션 관련
   const fadeAnim = useRef(new Animated.Value(0)).current; // 전체 배경 Fade
@@ -61,6 +63,21 @@ const RefuelInfoModal = () => {
     const current = parseInt(targetPrice.replace(/[^0-9]/g, '')) || 0;
     setTargetPrice(`${(current + amount).toLocaleString()}원`);
   };
+
+  const handleApply = () => {
+  // 전역 상태에 저장
+  setRefuelData({
+    car: selectedCar,
+    fuelAmount,
+    targetPrice,
+  });
+
+  // 애니메이션 후 무조건 goBack
+  Animated.parallel([
+    Animated.timing(fadeAnim, { toValue: 0, duration: 250, useNativeDriver: true }),
+    Animated.timing(slideAnim, { toValue: SCREEN_HEIGHT, duration: 300, useNativeDriver: true }),
+  ]).start(() => navigation.goBack());
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -123,7 +140,7 @@ const RefuelInfoModal = () => {
                 ))}
             </View>
 
-            <TouchableOpacity style={styles.applyButton} onPress={() => { console.log(selectedCar); handleClose(); }}>
+            <TouchableOpacity style={styles.applyButton} onPress={handleApply}>
                 <Text style={styles.applyButtonText}>적용하기</Text>
             </TouchableOpacity>
         </View>
@@ -133,12 +150,6 @@ const RefuelInfoModal = () => {
             <View style={StyleSheet.absoluteFill}>
                 <Pressable style={styles.selectorOverlay} onPress={() => toggleSelector(false)} />
                 <Animated.View style={[styles.selectorSheet, { transform: [{ translateY: selectorAnim }] }]}>
-                    <View style={styles.selectorHeader}>
-                        <Text style={styles.selectorTitle}>차량 변경</Text>
-                        <TouchableOpacity onPress={() => toggleSelector(false)}>
-                            <Text style={styles.doneText}>완료</Text>
-                        </TouchableOpacity>
-                    </View>
                     <ScrollView style={styles.selectorList}>
                         {CAR_LIST.map((item) => (
                             <TouchableOpacity 
@@ -146,7 +157,7 @@ const RefuelInfoModal = () => {
                                 style={[styles.selectorItem, selectedCar.id === item.id && styles.selectedItem]}
                                 onPress={() => {
                                     setSelectedCar(item);
-                                    // toggleSelector(false); // 선택 즉시 닫으려면 주석 해제
+                                    toggleSelector(false); // 선택 즉시 닫으려면 주석 해제
                                 }}
                             >
                                 <Text style={[styles.itemText, selectedCar.id === item.id && styles.selectedItemText]}>
