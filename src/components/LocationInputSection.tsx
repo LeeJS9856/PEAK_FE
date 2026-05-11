@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 16,
-    margin: 16,
+    marginVertical: 16,
+    marginHorizontal: 23,
     alignItems: 'stretch',
   },
   row: {
