@@ -25,11 +25,6 @@ const RecommandScreen: React.FC = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'Recommand'>>();
   const { refuelData } = useRefuel();
 
-  
-  const handleFloatingButtonPress = () => {
-    navigation.navigate('RefuelInfo');
-  };
-
   useEffect(() => {
     const { selectedPlace, type } = route.params ?? {};
     if (selectedPlace) {
@@ -37,6 +32,15 @@ const RecommandScreen: React.FC = () => {
       else if (type === 'end') setEndLocation(selectedPlace);
     }
   }, [route.params]);
+
+  const handleStationPress = (station: any) => {
+    navigation.navigate('StationDetail', {
+      station: station,        // 클릭한 주유소의 모든 정보
+      startLocation: startLocation, // 현재 입력된 출발지
+      endLocation: endLocation,     // 현재 입력된 도착지
+      routeOption: selectedOption   // 선택된 경로 옵션 (필요 시)
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -55,7 +59,8 @@ const RecommandScreen: React.FC = () => {
       {/* 주유소 리스트 영역 */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {DUMMY_STATIONS.map((station) => (
-          <GasStationItem key={station.id} station={station} />
+          <GasStationItem key={station.id} station={station} 
+          onPress={() => handleStationPress(station)}/>
         ))}
 
         {/* 기존 주유 조건 텍스트는 리스트 하단이나 적절한 곳에 배치 가능 */}

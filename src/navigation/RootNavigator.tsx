@@ -15,6 +15,7 @@ import MyInfoScreen from '../pages/Info/InfoScreen';
 import SearchScreen from '../pages/Search/SearchScreen';
 import RecommandScreen from '../pages/Recommand/RecommandScreen';
 import RefuelInfoModal from '../pages/Recommand/RefuelInfoModal';
+import StationDetailScreen from '../pages/StationDetail/StationDetailScreen';
 
 const MyTabs = createBottomTabNavigator({
   screens: {
@@ -104,6 +105,12 @@ const Stack = createNativeStackNavigator({
         animation: 'fade'
       },
     },
+    StationDetail: {
+      screen: StationDetailScreen,
+      options: {
+        headerShown: false,
+      }
+    }
   },
 });
 

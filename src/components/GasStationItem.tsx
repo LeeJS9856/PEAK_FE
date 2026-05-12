@@ -1,22 +1,27 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ViewStyle, TextStyle, ImageStyle } from 'react-native';
+import { View, Text, StyleSheet, Image, ViewStyle, TextStyle, ImageStyle, TouchableOpacity } from 'react-native'; // TouchableOpacity 추가
 import { COLORS } from '../constants/colors';
 import { GasStation } from '../constants/gasStations';
 import { BRAND_ICONS } from '../constants/brandIcons';
 
 interface GasStationItemProps {
   station: GasStation;
+  onPress: () => void; // ★ onPress prop 타입 정의 추가
 }
 
-const GasStationItem: React.FC<GasStationItemProps> = ({ station }) => {
+const GasStationItem: React.FC<GasStationItemProps> = ({ station, onPress }) => {
   // 브랜드 매핑이 없으면 기본 로고 사용
   const brandIcon = BRAND_ICONS[station.brand] || require('../assets/images/sk.png');
 
   return (
-    <View style={styles.container}>
+    // ★ View를 TouchableOpacity로 변경하고 onPress 연결
+    <TouchableOpacity 
+      style={styles.container} 
+      onPress={onPress} 
+      activeOpacity={0.7}
+    >
       <View style={styles.leftContent}>
         <View style={styles.headerRow}>
-          {/* 에러가 발생하던 이미지 스타일 적용 부분 */}
           <Image source={brandIcon} style={styles.brandIcon} />
           <Text style={styles.stationName}>{station.name}</Text>
         </View>
@@ -33,8 +38,7 @@ const GasStationItem: React.FC<GasStationItemProps> = ({ station }) => {
 
       <View style={styles.rightContent}>
         {station.tag && (
-          <View
-            style={styles.tagBadge}>
+          <View style={styles.tagBadge}>
             <Text style={styles.tagText}>{station.tag}</Text>
           </View>
         )}
@@ -42,22 +46,21 @@ const GasStationItem: React.FC<GasStationItemProps> = ({ station }) => {
           총 {station.totalPrice.toLocaleString()}원
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
-// 각 스타일 객체에 명확한 타입을 지정하여 'No overload matches this call' 에러 방지
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: COLORS.white,
     paddingVertical: 20,
-    paddingHorizontal:23,
+    paddingHorizontal: 23,
     borderBottomWidth: 10,
     borderBottomColor: COLORS.lightgray,
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-  } as ViewStyle, // 명시적 ViewStyle 지정
+  } as ViewStyle,
 
   leftContent: {
     flex: 1,
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginRight: 12,
-  } as ImageStyle, // ★ 핵심: Image 전용 스타일임을 명시
+  } as ImageStyle,
 
   stationName: {
     fontSize: 16,
@@ -83,8 +86,8 @@ const styles = StyleSheet.create({
 
   fuelTypeText: {
     fontSize: 12,
-    fontWeight:'300',
-    marginTop:5,
+    fontWeight: '300',
+    marginTop: 5,
     color: COLORS.darkgray,
   } as TextStyle,
 
@@ -97,7 +100,7 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     textAlignVertical: 'center',
     fontSize: 24,
-    fontWeight: '800',
+    fontWeight: '800', // 가독성을 위해 FontWeight 타입 준수
     color: COLORS.black,
     marginRight: 12,
   } as TextStyle,
@@ -124,14 +127,14 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 11,
     color: COLORS.white,
-    fontWeight: '700', // 'Bold' 대신 숫자나 'bold' 사용 (타입 오류 예방)
+    fontWeight: '700',
   } as TextStyle,
 
   totalPriceText: {
     fontSize: 16,
     fontWeight: '700',
     color: COLORS.primary,
-    marginBottom:10,
+    marginBottom: 10,
   } as TextStyle,
 });
 
