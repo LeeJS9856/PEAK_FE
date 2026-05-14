@@ -2,22 +2,38 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity, TextInput, FlatList, Text, SafeAreaView, ActivityIndicator } from 'react-native';
 import { COLORS } from '../../constants/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { getFilteredData, SearchResult } from '../../utils/SearchUtils';
 
 const SearchScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [query, setQuery] = useState<string>('');
   const [filteredDataSource, setFilteredDataSource] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const route = useRoute<any>();
 
-  // 1. lodash 대신 사용할 타이머 참조 변수
-  // ReturnType<typeof setTimeout>을 사용하면 Node/Browser 환경 차이 없이 정확한 타입을 가집니다.
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  /**
-   * 2. 실제 검색을 수행하는 로직
-   */
+  const target = route.params?.target ?? 'start';
+
+  const handleSelectPlace = (placeName: string) => {
+    // 1. Recommand에서 보낸 콜백 함수(onSelect)가 있는지 확인
+    const onSelect = route.params?.onSelect;
+
+    if (onSelect) {
+      // 2. 콜백 함수에 선택한 장소명을 담아 실행 (Recommand의 state가 업데이트됨)
+      onSelect(placeName);
+      // 3. 현재 검색 화면을 닫고 이전 화면(Recommand)으로 돌아감
+      navigation.goBack();
+    } else {
+      // 만약 Main에서 바로 왔는데 Recommand로 가야 하는 상황이라면 (첫 진입)
+      navigation.navigate('Recommand', { 
+        selectedPlace: placeName, 
+        type: 'start' 
+      });
+    }
+  };
+
   const performSearch = async (text: string) => {
     if (!text.trim()) {
       setFilteredDataSource([]);
@@ -37,13 +53,9 @@ const SearchScreen: React.FC = () => {
     }
   };
 
-  /**
-   * 3. 입력값이 변경될 때 호출되는 핸들러 (직접 구현한 디바운스 로직)
-   */
   const onChangeText = (text: string) => {
     setQuery(text);
 
-    // 이전 타이머가 작동 중이라면 취소 (글자를 계속 치는 동안은 검색 실행 안함)
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }
@@ -54,15 +66,11 @@ const SearchScreen: React.FC = () => {
       return;
     }
 
-    // 500ms 동안 입력이 멈추면 검색 실행
     debounceTimer.current = setTimeout(() => {
       performSearch(text);
     }, 500);
   };
 
-  /**
-   * 4. 컴포넌트 언마운트 시 타이머 정리 (메모리 누수 방지)
-   */
   useEffect(() => {
     return () => {
       if (debounceTimer.current) {
@@ -71,12 +79,11 @@ const SearchScreen: React.FC = () => {
     };
   }, []);
 
-  // ... (renderItem, renderEmptyState, return 부분은 이전과 동일)
 
   const renderItem = ({ item }: { item: SearchResult }) => (
     <TouchableOpacity 
       style={styles.itemContainer} 
-      onPress={() => console.log('Selected:', item.name)}
+       onPress={() => handleSelectPlace(item.name)}
     >
       <View style={styles.iconCircle}>
         <Icon name="location-sharp" size={18} color={COLORS.darkgray} />
@@ -147,7 +154,6 @@ const SearchScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  // 기존 스타일 유지
   safeArea: { flex: 1, backgroundColor: COLORS.white },
   layout: { flex: 1, paddingHorizontal: 20, paddingTop: 20 },
   searchBox: {

@@ -13,10 +13,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = '경로 검색',
 }) => {
   const [query, setQuery] = useState('');
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   const handlePress = () => {
-    navigation.navigate('Search' as never);
+    navigation.navigate('Search', { target: 'start' });
   };
 
   return (

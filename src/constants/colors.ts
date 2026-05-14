@@ -14,6 +14,7 @@ export const COLORS = {
   gray: '#CACACA',
   darkgray: '#9B9B9B',
   lightgray: '#F5F5F5',
+  backgroundgray: '#F7F8FA',
   placeholder: '#BABABA',
 
   // Backgrounds
